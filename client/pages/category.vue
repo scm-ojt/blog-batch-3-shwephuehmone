@@ -23,7 +23,7 @@
             <form method="POST" @submit.prevent= "create()">
               <div class="form-group">
                 <label> Name:</label>
-                <input v-model="category.name" type="text" class="form-control" />
+                <input v-model= "category.name" type="text" class="form-control" />
               </div>
               <button type="submit" class="btn btn-primary">Save</button>
             </form>
@@ -46,7 +46,7 @@
               <td>{{ category.name }}</td>
               <td>
                 <button class="btn btn-success btn-sm " @click= "edit(category)">Edit</button>
-                <button class="btn btn-danger btn-sm" @click= "destroy(category.id)">Delete</button>
+                <button class="btn btn-danger btn-sm" @click= "destroy(category)">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -81,16 +81,20 @@ export default {
         });
     },
     async edit(category){
+
         this.isEditMode = true;
         this.category.id= category.id;
         this.category.name= category.name;
+        console.log(category)
+        this.category.name = category.name
     },
-    async update(){
-
-    },
-    async destroy(id){
-        await this.$axios.$delete("http://127.0.0.1:8000/api/category/id")
-        .then((res)=> this.fetch());  
+    async destroy(category){
+      await this.$axios.delete(`http://127.0.0.1:8000/api/category/${category.id}`)
+          .then(() => {
+            this.categories = this.categories.filter((item) => {
+            return item.id !== category.id;
+          });
+          })
 }
   },
   async fetch() {

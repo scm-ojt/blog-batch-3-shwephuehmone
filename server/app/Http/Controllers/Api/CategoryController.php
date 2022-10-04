@@ -37,7 +37,7 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CategoryRequest $request)
+    public function store(Request $request)
     {
         $categories= Category::create([
             'name'=> $request->name
@@ -53,6 +53,8 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
+        $category = Category::find($id);
+        return $category;
     }
 
     /**
@@ -64,7 +66,9 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $category = Category::find($id);
+        $category->name = $request->name;
+        $category->save();
     }
 
     /**
@@ -75,6 +79,7 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        DB::table('categories')->where('id', $id)->delete();
+        $category = Category::find($id);
+        $category->delete();
     }
 }
