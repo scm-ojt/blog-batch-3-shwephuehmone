@@ -38,7 +38,21 @@ export default {
   buildModules: [],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["@nuxtjs/axios"],
+  modules: ["@nuxtjs/axios", "@nuxtjs/auth-next", "bootstrap-vue/nuxt"],
+
+  auth: {
+    strategies: {
+      laravelSanctum: {
+        provider: "laravel/sanctum",
+        url: "http://localhost:8000",
+        endpoints: {
+          login: {
+            url: "/login",
+          },
+        },
+      },
+    },
+  },
 
   axios: {
     baseURL: "http://localhost:8000",
@@ -46,7 +60,7 @@ export default {
   },
 
   router: {
-    middleware: [],
+    middleware: ["auth"],
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
