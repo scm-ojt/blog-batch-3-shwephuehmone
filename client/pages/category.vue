@@ -5,11 +5,16 @@
         <button class="btn btn-primary mb-3" @click="create">Create</button>
       </div>
       <div class="col-6">
-        <form>
+        <form @submit.prevent="search()">
           <div class="input-group">
-            <input type="text" placeholder="search" class="form-control" v-model= "keyword" />
+            <input
+              type="text"
+              placeholder="search"
+              class="form-control"
+              v-model="keyword"
+            />
             <div class="input-group-append">
-              <button type="submit" class="btn btn-primary" @click="search()">Search</button>
+              <button type="submit" class="btn btn-primary">Search</button>
             </div>
           </div>
         </form>
@@ -26,7 +31,7 @@
                 <input v-model="category.name" type="text" class="form-control" />
               </div>
               <div>
-                <small class="text-danger" v-if= "Error != ''">*{{ Error }}</small>
+                <small class="text-danger" v-if="Error != ''">*{{ Error }}</small>
               </div>
               <button type="submit" class="btn btn-primary">Save</button>
             </form>
@@ -35,19 +40,30 @@
         </div>
       </div>
       <div class="col-8">
-        <b-table id="my-table" small :fields="fields" :items="categories" :per-page="perPage"
+        <b-table
+          id="my-table"
+          small
+          :fields="fields"
+          :items="categories"
+          :per-page="perPage"
           :current-page="currentPage">
           <template #cell(actions)="data">
-            <button class="btn btn-success btn-sm" @click="edit(data.item)">
-              Edit
-            </button>
-            <button class="btn btn-danger btn-sm" @click="destroy(data.item)">
+            <button class="btn btn-success btn-sm" @click="edit(data.item)">Edit</button>
+            <button
+              class="btn btn-danger btn-sm"
+              @click="destroy(data.item)"
+              >
               Delete
             </button>
           </template>
         </b-table>
         <div class="overflow-auto">
-          <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="my-table">
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="rows"
+            :per-page="perPage"
+            aria-controls="my-table"
+          >
           </b-pagination>
           <p class="mt-3">Current Page: {{ currentPage }}</p>
         </div>
@@ -62,30 +78,37 @@ export default {
   },
   data() {
     return {
-      perPage:5,
+      perPage: 5,
       currentPage: 1,
       fields: [
-        'id', { key: 'id', label: 'id' },
-        'name', { key: 'name', label: 'name' },
-        "Actions"
+        "id",
+        { key: "id", label: "id" },
+        "name",
+        { key: "name", label: "name" },
+        "Actions",
       ],
       isEditMode: false,
       category: {
         id: "",
         name: "",
       },
-      categories:{},
+      categories: [],
       Error: "",
       keyword: "",
     };
   },
   methods: {
-    async getAllCategories() {
+    rows() {
+      return this.categories.length;
+    },
+    search() {
+      this.getCategories();
+    },
+    async getCategories() {
       await this.$axios
-        .$get("categories?search=" + this.keyword)
+        .$get("http://127.0.0.1:8000/api/category?search=" + this.keyword)
         .then((res) => {
-          this.categories = res.data;
-          console.log(this.categories);
+          this.categories = res;
         })
         .catch((err) => {
           console.error(err);
@@ -114,12 +137,13 @@ export default {
         .then((res) => {
           this.getCategories();
           this.category = {};
-        })
-        .catch((err) => {
-          this.Error = err.response.data.errors.name[0];
         });
+      // .catch((err) => {
+      //   this.Error = err.response.data.errors.name[0];
+      // });
     },
     async destroy(category) {
+      if(confirm('Are you sure you want to delete?'))
       await this.$axios
         .delete(`http://127.0.0.1:8000/api/category/${category.id}`)
         .then(() => {
@@ -134,18 +158,10 @@ export default {
       res.json()
     );
   },
-  // search() {
-  //     this.categories = this.categories.filter((item) => {
-  //       return item.name.includes(this.search);
-  //     });
-  //   },
-  search() {
-      this.getAllCategories();
-    },
   computed: {
     rows() {
-      return this.categories.length
-    }
-  }
+      return this.categories.length;
+    },
+  },
 };
 </script>

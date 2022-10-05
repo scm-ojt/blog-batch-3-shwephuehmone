@@ -4,7 +4,14 @@
       <div class="col-md-4">
         <div class="card">
           <div class="card-body">
-            <h3 class="text-info">Register</h3>
+            <img
+              class="mx-auto d-block mb-3"
+              src="https://media.istockphoto.com/photos/webinar-elearning-skills-business-internet-technology-concepts-picture-id1366428092?s=612x612"
+              alt=""
+              width="75"
+              height="75"
+            />
+            <h3 class="text-info text-center">Sign Up</h3>
             <form @submit.prevent="register">
               <div class="form-group">
                 <input
@@ -58,7 +65,7 @@ export default {
         email: null,
         password: null,
         password_confirmation: null,
-        _token: '',
+        _token: "",
       },
       errors: [],
     };
@@ -70,9 +77,8 @@ export default {
     register() {
       try {
         this.$axios.post("/register", this.form).then((res) => {
-          this.$auth.loginWith("laravelSanctum", { data: this.form });
           this.$router.push({
-            path: "/",
+            path: "/login",
           });
         });
       } catch (err) {

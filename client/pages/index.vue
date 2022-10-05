@@ -3,7 +3,7 @@
     <div class="flex items-center justify-center h-screen">
       <div class="max-w-xl p-5 shadow">
         <div v-if="!$auth.loggedIn">
-          <h3>Home</h3>
+          <h3>Welcome</h3>
         </div>
         <div v-if="$auth.loggedIn">
           <div>Name:{{ $auth.user.name }}</div>
@@ -11,7 +11,6 @@
         </div>
       </div>
     </div>
-    <h3>Welcome</h3>
   </div>
 </template>
 

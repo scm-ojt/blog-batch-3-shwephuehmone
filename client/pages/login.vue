@@ -4,11 +4,19 @@
       <div class="col-md-4">
         <div class="card">
           <div class="card-body">
-            <h3 class="text-info">Login</h3>
+            <img
+              class="mx-auto d-block mb-3"
+              src="https://media.istockphoto.com/photos/webinar-elearning-skills-business-internet-technology-concepts-picture-id1366428092?s=612x612"
+              alt=""
+              width="75"
+              height="75"
+            />
+            <h3 class="text-info text-center">Sign In</h3>
             <form @submit.prevent="login()">
               <!-- <div class="form-group">
                 <input type="text" class="form-control" placeholder="Name" />
               </div> -->
+
               <div class="form-group">
                 <input
                   type="text"
@@ -26,7 +34,10 @@
                 />
               </div>
               <button type="submit" class="btn btn-primary mt-3 btn-block">Login</button>
-              <div class="text-xs "> Not Registered? <nuxt-link class="text-blue-600" to="/register">Register</nuxt-link></div>
+              <div class="text-xs">
+                Not Registered?
+                <nuxt-link class="text-blue-600" to="/register">Register</nuxt-link>
+              </div>
             </form>
           </div>
         </div>
@@ -54,7 +65,7 @@ export default {
       try {
         await this.$auth.loginWith("laravelSanctum", { data: this.form });
         this.$router.push({
-          path: "/",
+          path: "/category",
         });
       } catch (err) {
         console.log(err);
