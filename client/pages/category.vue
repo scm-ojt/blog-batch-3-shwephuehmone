@@ -28,11 +28,16 @@
             <form method="POST" @submit.prevent="create()">
               <div class="form-group">
                 <label> Name:</label>
-                <input v-model="category.name" type="text" class="form-control" />
+                <input
+                  v-model="category.name"
+                  type="text"
+                  class="form-control"
+                  required
+                />
               </div>
-              <div>
+              <!-- <div>
                 <small class="text-danger" v-if="Error != ''">*{{ Error }}</small>
-              </div>
+              </div> -->
               <button type="submit" class="btn btn-primary">Save</button>
             </form>
           </div>
@@ -46,13 +51,11 @@
           :fields="fields"
           :items="categories"
           :per-page="perPage"
-          :current-page="currentPage">
+          :current-page="currentPage"
+        >
           <template #cell(actions)="data">
             <button class="btn btn-success btn-sm" @click="edit(data.item)">Edit</button>
-            <button
-              class="btn btn-danger btn-sm"
-              @click="destroy(data.item)"
-              >
+            <button class="btn btn-danger btn-sm" @click="destroy(data.item)">
               Delete
             </button>
           </template>
@@ -121,10 +124,10 @@ export default {
         .then((res) => {
           this.categories.push(res);
           this.category.name = "";
-        })
-        .catch((err) => {
-          this.Error = err.response.data.errors.name[0];
         });
+      // .catch((err) => {
+      //   this.Error = err.response.data.errors.name[0];
+      // });
     },
     async edit(category) {
       this.isEditMode = true;
@@ -143,14 +146,14 @@ export default {
       // });
     },
     async destroy(category) {
-      if(confirm('Are you sure you want to delete?'))
-      await this.$axios
-        .delete(`http://127.0.0.1:8000/api/category/${category.id}`)
-        .then(() => {
-          this.categories = this.categories.filter((item) => {
-            return item.id !== category.id;
+      if (confirm("Are you sure you want to delete?"))
+        await this.$axios
+          .delete(`http://127.0.0.1:8000/api/category/${category.id}`)
+          .then(() => {
+            this.categories = this.categories.filter((item) => {
+              return item.id !== category.id;
+            });
           });
-        });
     },
   },
   async fetch() {

@@ -16,6 +16,9 @@
             <NuxtLink class="nav-link" to="/category">Category</NuxtLink>
           </li>
           <li class="nav-item" v-if="$auth.loggedIn">
+            <NuxtLink class="nav-link" to="/post">Post</NuxtLink>
+          </li>
+          <li class="nav-item" v-if="$auth.loggedIn">
             <span @click="logout" class="btn">Logout</span>
           </li>
         </ul>
