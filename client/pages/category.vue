@@ -2,7 +2,10 @@
   <div class="container my-5">
     <div class="row">
       <div class="col-2 offset-4">
-        <button class="btn btn-primary mb-3" @click="create">Create</button>
+        <button class="btn btn-primary mb-3" @click="create">
+          Create
+          <font-awesome-icon :icon="['fas', 'square-plus']" />
+        </button>
       </div>
       <div class="col-6">
         <form @submit.prevent="search()">
@@ -23,7 +26,9 @@
     <div class="row">
       <div class="col-4">
         <div class="card">
-          <h4 class="card-header text-info">{{ isEditMode ? "Edit" : "Create" }}</h4>
+          <h4 class="card-header text-info">
+            {{ isEditMode ? "Edit" : "Create" }}
+          </h4>
           <div class="card-body">
             <form method="POST" @submit.prevent="create()">
               <div class="form-group">
@@ -31,7 +36,10 @@
                 <input v-model="category.name" type="text" class="form-control" />
               </div>
               <div class="text-danger mb-3" v-if="Error">*{{ Error }}</div>
-              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="submit" class="btn btn-primary">
+                Save
+                <font-awesome-icon :icon="['fas', 'floppy-disk']" />
+              </button>
             </form>
           </div>
           <div class="footer"></div>
@@ -47,8 +55,11 @@
           :current-page="currentPage"
         >
           <template #cell(actions)="data">
-            <button class="btn btn-success btn-sm" @click="edit(data.item)">Edit</button>
+            <button class="btn btn-success btn-sm" @click="edit(data.item)">
+              <font-awesome-icon :icon="['fas', 'pen-to-square']" />Edit
+            </button>
             <button class="btn btn-danger btn-sm" @click="destroy(data.item)">
+              <font-awesome-icon :icon="['fas', 'trash']" />
               Delete
             </button>
           </template>
@@ -67,7 +78,10 @@
     </div>
   </div>
 </template>
+
 <script>
+import swal from "sweetalert2";
+
 export default {
   head: {
     title: "Category",
@@ -112,6 +126,13 @@ export default {
     },
     async create() {
       this.isEditMode = false;
+      // new swal({
+      //   position: "top-end",
+      //   icon: "success",
+      //   title: "Created successfully",
+      //   showConfirmButton: false,
+      //   timer: 1500,
+      // });
       await this.$axios
         .$post("http://127.0.0.1:8000/api/category", { name: this.category.name })
         .then((res) => {
@@ -139,14 +160,20 @@ export default {
         });
     },
     async destroy(category) {
-      if (confirm("Are you sure you want to delete?"))
-        await this.$axios
-          .delete(`http://127.0.0.1:8000/api/category/${category.id}`)
-          .then(() => {
-            this.categories = this.categories.filter((item) => {
-              return item.id !== category.id;
-            });
+      new swal({
+        position: "top-end",
+        icon: "success",
+        title: "Deleted successfully",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      await this.$axios
+        .delete(`http://127.0.0.1:8000/api/category/${category.id}`)
+        .then(() => {
+          this.categories = this.categories.filter((item) => {
+            return item.id !== category.id;
           });
+        });
     },
   },
   async fetch() {

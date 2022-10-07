@@ -52,9 +52,6 @@
                   placeholder="Confirm Password"
                 />
               </div>
-              <!-- <div>
-                <div class="text-danger mb-3" v-if="errors.confirm">*{{ errors }}</div>
-              </div> -->
               <button type="submit" class="btn btn-primary mt-3 btn-block">
                 Register
               </button>
@@ -93,7 +90,6 @@ export default {
           });
         })
         .catch((error) => {
-          console.log(error.response);
           this.errors = error.response.data.errors;
         });
     },

@@ -1,34 +1,45 @@
 <template>
   <div class="container my-5">
-    <div class="row d-flex justify-content-end">
-      <div class="col-3">
-        <button class="btn btn-sm btn-primary" @click="createForm()">Create</button>
-      </div>
-      <div class="col-5 d-flex justify-content-end">
-        <div class="input-group input-group-sm mb-3 w-50">
-          <input type="text" class="form-control" v-model="keyword" />
-          <div class="input-group-append">
-            <button type="submit" class="btn btn-primary">Search</button>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="row">
-      <div class="col-4 px-3">
-        <div class="card">
-          <div class="card-header">
-            <h5>Create</h5>
+      <div class="col-2 offset-4">
+        <button class="btn btn-primary mb-3" @click="storepost()">
+          Create<font-awesome-icon :icon="['fas', 'square-plus']" />
+        </button>
+      </div>
+      <div class="col-6">
+        <form @submit.prevent="search()">
+          <div class="input-group">
+            <input type="text" placeholder="search" class="form-control" />
+            <div class="input-group-append">
+              <button type="submit" class="btn btn-primary">Search</button>
+            </div>
           </div>
+        </form>
+      </div>
+      <div class="col-4">
+        <div class="card">
+          <h4 class="card-header text-info">Create</h4>
           <div class="card-body">
-            <form>
-              <div class="form-group my-2">
-                <label for="name">Name</label>
-                <input type="text" class="form-control mt-2" id="name" />
-                <small class="text-danger"></small>
+            <form method="POST">
+              <div class="form-group">
+                <label>Image</label>
+                <input type="file" class="form-control" />
               </div>
-              <button class="btn btn-sm btn-primary" type="submit">Save</button>
+              <div class="form-group">
+                <label>Title</label>
+                <input v-model="post.title" type="text" class="form-control" />
+              </div>
+              <div class="form-group">
+                <label>Body</label>
+                <input v-model="post.body" type="text" class="form-control" />
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Save
+                <font-awesome-icon :icon="['fas', 'floppy-disk']" />
+              </button>
             </form>
           </div>
+          <div class="footer"></div>
         </div>
       </div>
       <div class="col-8">
@@ -44,15 +55,21 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Aye Aye</td>
-              <td></td>
-              <td>PHP</td>
-              <td>Lorem ipsum dolor</td>
+            <tr v-for="post in posts" :key="post.id">
+              <td>{{ post.id }}</td>
+              <!-- <td>{{ post.username }}</td> -->
+              <td>{{ post.image }}</td>
+              <td>{{ post.title }}</td>
+              <td>{{ post.body }}</td>
               <td>
-                <button class="btn btn-sm btn-success">Edit</button>
-                <button class="btn btn-sm btn-danger">Delete</button>
+                <button class="btn btn-sm btn-success">
+                  Edit
+                  <font-awesome-icon :icon="['fas', 'pen-to-square']" />
+                </button>
+                <button class="btn btn-sm btn-danger">
+                  Delete
+                  <font-awesome-icon :icon="['fas', 'trash']" />
+                </button>
               </td>
             </tr>
           </tbody>
@@ -63,7 +80,38 @@
 </template>
 
 <script>
-export default {};
+export default {
+  head: {
+    title: "Post",
+  },
+  data() {
+    return {
+      post: {
+        id: null,
+        user_id: null,
+        image: "",
+        title: "",
+        body: "",
+      },
+      posts: {},
+    };
+  },
+  methods: {
+    async storepost() {
+      await this.$axios
+        .$post("http://127.0.0.1:8000/api/category", { name: this.category.name })
+        .then((res) => {
+          this.categories.push(res);
+          this.category.name = "";
+        });
+    },
+  },
+  async fetch() {
+    this.categories = await fetch("http://127.0.0.1:8000/api/post").then((res) =>
+      res.json()
+    );
+  },
+};
 </script>
 
 <style></style>
