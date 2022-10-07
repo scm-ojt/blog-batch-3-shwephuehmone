@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryRequest extends FormRequest
+class PostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,9 @@ class CategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:225|unique:categories,name',
+            'image' => 'required',
+            'title' => 'required|max50:',
+            'body' => 'required|max:225',
         ];
     }
 
@@ -35,9 +37,11 @@ class CategoryRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Name cannot be blank!',
-            'name.max' => 'Your name must not be more than 225 characters.',
-            'name.unique' => 'Name must be unique',
+            'image.required' => 'Image is required',
+            'title.max' => 'Your text must not be more than 50 characters.',
+            'title.required' => 'Post Title is required',
+            'body.required' => 'Post body is required',
+            'post.max' => 'Your text must not be more than 225 characters.',
         ];
     }
 }

@@ -19,17 +19,19 @@
                   v-model="form.name"
                   class="form-control"
                   placeholder="Name"
-                  required
                 />
               </div>
+              <div class="text-danger mb-3" v-if="errors.name">*{{ errors.name[0] }}</div>
               <div class="form-group">
                 <input
                   type="text"
                   v-model="form.email"
                   class="form-control"
                   placeholder="Email"
-                  required
                 />
+              </div>
+              <div class="text-danger mb-3" v-if="errors.email">
+                *{{ errors.email[0] }}
               </div>
               <div class="form-group mt-3">
                 <input
@@ -37,8 +39,10 @@
                   v-model="form.password"
                   class="form-control"
                   placeholder="Password"
-                  required
                 />
+              </div>
+              <div class="text-danger mb-3" v-if="errors.password">
+                *{{ errors.password[0] }}
               </div>
               <div class="form-group mt-3">
                 <input
@@ -48,6 +52,9 @@
                   placeholder="Confirm Password"
                 />
               </div>
+              <!-- <div>
+                <div class="text-danger mb-3" v-if="errors.confirm">*{{ errors }}</div>
+              </div> -->
               <button type="submit" class="btn btn-primary mt-3 btn-block">
                 Register
               </button>
@@ -78,15 +85,17 @@ export default {
   },
   methods: {
     register() {
-      try {
-        this.$axios.post("/register", this.form).then((res) => {
+      this.$axios
+        .post("http://127.0.0.1:8000/register", this.form)
+        .then((response) => {
           this.$router.push({
             path: "/login",
           });
+        })
+        .catch((error) => {
+          console.log(error.response);
+          this.errors = error.response.data.errors;
         });
-      } catch (err) {
-        console.log(err);
-      }
     },
   },
 };

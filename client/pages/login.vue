@@ -4,14 +4,14 @@
       <div class="col-md-4">
         <div class="card">
           <div class="card-body">
-            <img
+            <!-- <img
               class="mx-auto d-block mb-3"
               src="https://media.istockphoto.com/photos/webinar-elearning-skills-business-internet-technology-concepts-picture-id1366428092?s=612x612"
               alt=""
               width="75"
               height="75"
-            />
-            <h3 class="text-info text-center">Sign In</h3>
+            /> -->
+            <h3 class="text-info text-center mb-3">Please Sign In</h3>
             <form @submit.prevent="login()">
               <!-- <div class="form-group">
                 <input type="text" class="form-control" placeholder="Name" />
@@ -25,6 +25,9 @@
                   placeholder="Email"
                 />
               </div>
+              <div class="text-danger mb-3" v-if="errors.email">
+                *{{ errors.email[0] }}
+              </div>
               <div class="form-group mt-3">
                 <input
                   type="password"
@@ -32,6 +35,9 @@
                   class="form-control"
                   placeholder="Password"
                 />
+                <div class="text-danger mb-3" v-if="errors.password">
+                  *{{ errors.password[0] }}
+                </div>
               </div>
               <button type="submit" class="btn btn-primary mt-3 btn-block">Login</button>
               <div class="text-xs">
@@ -54,6 +60,7 @@ export default {
         email: null,
         password: null,
       },
+      errors: {},
     };
   },
   mounted() {
@@ -61,14 +68,17 @@ export default {
   },
   methods: {
     async login() {
+      this.message = null;
+      this.errors = {};
       this.$nuxt.$loading.start();
       try {
         await this.$auth.loginWith("laravelSanctum", { data: this.form });
-        this.$router.push({
+        await this.$router.push({
           path: "/category",
         });
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        console.log(error);
+        this.errors = error.response.data.errors;
       }
       this.$nuxt.$loading.finish();
     },

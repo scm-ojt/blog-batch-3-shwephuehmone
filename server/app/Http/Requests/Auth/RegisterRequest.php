@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
+use Illuminate\Validation\Rules;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +25,13 @@ class CategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:225|unique:categories,name',
+            'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'string', 'email', 'max:100', 'unique:users'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ];
     }
 
+    
     /**
      * Summary of messages
      * @return array<string>
@@ -36,8 +40,8 @@ class CategoryRequest extends FormRequest
     {
         return [
             'name.required' => 'Name cannot be blank!',
-            'name.max' => 'Your name must not be more than 225 characters.',
-            'name.unique' => 'Name must be unique',
+            'email.required' => 'Email field is required!',
+            'password.required' => 'Password field is required!',
         ];
     }
 }

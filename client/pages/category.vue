@@ -28,16 +28,9 @@
             <form method="POST" @submit.prevent="create()">
               <div class="form-group">
                 <label> Name:</label>
-                <input
-                  v-model="category.name"
-                  type="text"
-                  class="form-control"
-                  required
-                />
+                <input v-model="category.name" type="text" class="form-control" />
               </div>
-              <!-- <div>
-                <small class="text-danger" v-if="Error != ''">*{{ Error }}</small>
-              </div> -->
+              <div class="text-danger mb-3" v-if="Error">*{{ Error }}</div>
               <button type="submit" class="btn btn-primary">Save</button>
             </form>
           </div>
@@ -124,10 +117,10 @@ export default {
         .then((res) => {
           this.categories.push(res);
           this.category.name = "";
+        })
+        .catch((error) => {
+          this.Error = error.response.data.message;
         });
-      // .catch((err) => {
-      //   this.Error = err.response.data.errors.name[0];
-      // });
     },
     async edit(category) {
       this.isEditMode = true;
@@ -140,10 +133,10 @@ export default {
         .then((res) => {
           this.getCategories();
           this.category = {};
+        })
+        .catch((error) => {
+          this.Error = error.response.data.message;
         });
-      // .catch((err) => {
-      //   this.Error = err.response.data.errors.name[0];
-      // });
     },
     async destroy(category) {
       if (confirm("Are you sure you want to delete?"))
