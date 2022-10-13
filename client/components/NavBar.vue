@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container justify-between">
       <NuxtLink class="nav-link" to="/">
-        <h2>BLOG</h2>
+        <h2>E-Library</h2>
       </NuxtLink>
       <div class="" id="navbarNav">
         <ul class="navbar-nav">
@@ -18,7 +18,10 @@
           <li class="nav-item" v-if="$auth.loggedIn">
             <NuxtLink class="nav-link" to="/post">Post</NuxtLink>
           </li>
-          <li class="nav-item" v-if="$auth.loggedIn">
+          <li class="nav-item dropdown" v-if="$auth.loggedIn">
+            <a class="nav-link dropdown-toggle text-uppercase" href="#">
+              {{ $auth.user.name }}
+            </a>
             <span @click="logout" class="btn">Logout</span>
           </li>
         </ul>

@@ -1,79 +1,71 @@
 <template>
   <div class="container my-5">
     <div class="row">
-      <div class="col-2 offset-4">
-        <button class="btn btn-primary mb-3" @click="storepost()">
-          Create<font-awesome-icon :icon="['fas', 'square-plus']" />
-        </button>
+      <div class="col-2 offset-4 mb-3">
+        <b-button variant="primary" href="./posts/createpost">
+          Add
+          <font-awesome-icon :icon="['fas', 'square-plus']" />
+        </b-button>
       </div>
       <div class="col-6">
         <form @submit.prevent="search()">
-          <div class="input-group">
-            <input type="text" placeholder="search" class="form-control" />
+          <div class="input-group justify-content-end">
+            <input
+              type="text"
+              placeholder="search"
+              class="form-control"
+              v-model="keyword"
+            />
             <div class="input-group-append">
               <button type="submit" class="btn btn-primary">Search</button>
             </div>
           </div>
         </form>
       </div>
-      <div class="col-4">
-        <div class="card">
-          <h4 class="card-header text-info">Create</h4>
-          <div class="card-body">
-            <form method="POST">
-              <div class="form-group">
-                <label>Image</label>
-                <input type="file" class="form-control" />
-              </div>
-              <div class="form-group">
-                <label>Title</label>
-                <input v-model="post.title" type="text" class="form-control" />
-              </div>
-              <div class="form-group">
-                <label>Body</label>
-                <input v-model="post.body" type="text" class="form-control" />
-              </div>
-              <button type="submit" class="btn btn-primary">
-                Save
-                <font-awesome-icon :icon="['fas', 'floppy-disk']" />
-              </button>
-            </form>
-          </div>
-          <div class="footer"></div>
-        </div>
-      </div>
       <div class="col-8">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>User Name</th>
-              <th>Image</th>
-              <th>Title</th>
-              <th>Body</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="post in posts" :key="post.id">
-              <td>{{ post.id }}</td>
-              <!-- <td>{{ post.username }}</td> -->
-              <td>{{ post.image }}</td>
-              <td>{{ post.title }}</td>
-              <td>{{ post.body }}</td>
-              <td>
-                <button class="btn btn-sm btn-success">
-                  Edit
-                  <font-awesome-icon :icon="['fas', 'pen-to-square']" />
-                </button>
-                <button class="btn btn-sm btn-danger">
-                  Delete
-                  <font-awesome-icon :icon="['fas', 'trash']" />
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <b-table
+          id="my-table"
+          small
+          :fields="fields"
+          :items="posts"
+          :per-page="perPage"
+          :current-page="currentPage"
+        >
+          <template #cell(image)="data">
+            <img
+              class="img"
+              :src="`http://localhost:8000/storage/images/${data.item.image}`"
+            />
+          </template>
+          <template #cell(actions)="data">
+            <button class="btn btn-success btn-sm">
+              <nuxt-link :to="`/posts/editpost/${data.item.id}`" class="text-white"
+                >Edit</nuxt-link
+              >
+              <font-awesome-icon :icon="['fas', 'pen-to-square']" />
+            </button>
+            <button class="btn btn-danger btn-sm" @click="destroy(data.item)">
+              Delete
+              <font-awesome-icon :icon="['fas', 'trash']" />
+            </button>
+            <button class="btn btn-info">
+              <nuxt-link :to="`./posts/${data.item.id}`" class="text-white"
+                >Details</nuxt-link
+              >
+              <font-awesome-icon :icon="['fas', 'circle-info']" />
+            </button>
+          </template>
+        </b-table>
+        <div class="overflow-auto">
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="rows"
+            :per-page="perPage"
+            aria-controls="my-table"
+          >
+          </b-pagination>
+          <p class="mt-3">Current Page: {{ currentPage }}</p>
+        </div>
       </div>
     </div>
   </div>
@@ -86,32 +78,72 @@ export default {
   },
   data() {
     return {
+      perPage: 5,
+      currentPage: 1,
+      fields: [
+        "id",
+        { key: "id", label: "id" },
+        "image",
+        { key: "image", label: "image" },
+        "title",
+        { key: "title", label: "title" },
+        "Actions",
+      ],
       post: {
         id: null,
-        user_id: null,
+        //user_id: null,
         image: "",
         title: "",
-        body: "",
       },
       posts: {},
+      keyword: "",
     };
   },
   methods: {
-    async storepost() {
+    search() {
+      this.getAllPosts();
+    },
+    // async getPost() {
+    //   await this.$axios
+    //     .$get("http://127.0.0.1:8000/api/post/?search=" + this.keyword)
+    //     .then((res) => {
+    //       this.post = res;
+    //       console.log(this.post);
+    //     });
+    // },
+    async getAllPosts() {
       await this.$axios
-        .$post("http://127.0.0.1:8000/api/category", { name: this.category.name })
+        .$get("http://127.0.0.1:8000/api/post?search=" + this.keyword)
         .then((res) => {
-          this.categories.push(res);
-          this.category.name = "";
+          this.posts = res;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    async destroy(post) {
+      if (confirm("Are you sure you want to delete?"))
+        await this.$axios.delete(`http://127.0.0.1:8000/api/post/${post.id}`).then(() => {
+          this.posts = this.posts.filter((item) => {
+            return item.id !== post.id;
+          });
         });
     },
   },
   async fetch() {
-    this.categories = await fetch("http://127.0.0.1:8000/api/post").then((res) =>
-      res.json()
-    );
+    this.posts = await fetch("http://127.0.0.1:8000/api/post").then((res) => res.json());
+  },
+  computed: {
+    rows() {
+      return this.posts.length;
+    },
   },
 };
 </script>
 
-<style></style>
+<style>
+.img {
+  width: 80px;
+  height: 80px;
+}
+</style>

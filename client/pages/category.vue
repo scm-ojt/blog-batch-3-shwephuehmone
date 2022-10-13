@@ -56,11 +56,10 @@
         >
           <template #cell(actions)="data">
             <button class="btn btn-success btn-sm" @click="edit(data.item)">
-              <font-awesome-icon :icon="['fas', 'pen-to-square']" />Edit
+              Edit <font-awesome-icon :icon="['fas', 'pen-to-square']" />
             </button>
             <button class="btn btn-danger btn-sm" @click="destroy(data.item)">
-              <font-awesome-icon :icon="['fas', 'trash']" />
-              Delete
+              Delete <font-awesome-icon :icon="['fas', 'trash']" />
             </button>
           </template>
         </b-table>
@@ -126,13 +125,13 @@ export default {
     },
     async create() {
       this.isEditMode = false;
-      // new swal({
-      //   position: "top-end",
-      //   icon: "success",
-      //   title: "Created successfully",
-      //   showConfirmButton: false,
-      //   timer: 1500,
-      // });
+      new swal({
+        position: "top-end",
+        icon: "success",
+        title: "Created successfully",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       await this.$axios
         .$post("http://127.0.0.1:8000/api/category", { name: this.category.name })
         .then((res) => {

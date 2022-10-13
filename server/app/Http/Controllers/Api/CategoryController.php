@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 
+//use App\Http\Requests\CategoryRequest;
+
 class CategoryController extends Controller
 {
     /**
@@ -14,10 +16,10 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        if (request('search')) {
-            return Category::where('name', 'like', '%' .request('search'). '%')
+        if ($request->search) {
+            return Category::where('name', 'like', '%' . $request->search . '%')
             ->orderBy('id', 'DESC')->get();
         } else {
             return Category::orderBy('id', 'DESC')->get();
@@ -41,7 +43,7 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
         $categories= Category::create([
             'name'=> $request->name
@@ -49,7 +51,7 @@ class CategoryController extends Controller
         return response([
             "results" => "1",
             "message" =>"Created successfully",
-            "data" => $category
+            "data" => $categories
         ]);
     }
 
@@ -61,7 +63,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category = Category::find($id);
+        $category = Category::findorfail($id);
         return response([
             "results" => "1",
             "message" =>"success",
@@ -82,10 +84,9 @@ class CategoryController extends Controller
         $category->name = $request->name;
         $category->save();
         return response([
-            "results" => "1",
-            "message" =>"Updated successfully",
-            "data" => $category
-        ]);
+            "category"=>$category,
+            "message" =>"Category has been Updated successfully"
+        ], 200);
     }
 
     /**
@@ -98,10 +99,7 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
         $category->delete();
-        return response([
-            "results" => "1",
-            "message" =>"Deleted successfully",
-            "data" => $category
-        ]);
+        return response()->json(["category"=>$category,
+        "message"=> 'Category has been deleted successfully'], 200);
     }
 }
