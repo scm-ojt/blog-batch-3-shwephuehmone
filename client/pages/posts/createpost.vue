@@ -81,13 +81,6 @@ export default {
         });
     },
     async store() {
-      // new swal({
-      //   position: "top-end",
-      //   icon: "success",
-      //   title: "Created successfully",
-      //   showConfirmButton: false,
-      //   timer: 1500,
-      // });
       const formData = new FormData();
       formData.append("image", this.post.image);
       formData.append("title", this.post.title);
