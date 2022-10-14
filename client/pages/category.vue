@@ -125,18 +125,18 @@ export default {
     },
     async create() {
       this.isEditMode = false;
-      new swal({
-        position: "top-end",
-        icon: "success",
-        title: "Created successfully",
-        showConfirmButton: false,
-        timer: 1500,
-      });
       await this.$axios
         .$post("http://127.0.0.1:8000/api/category", { name: this.category.name })
         .then((res) => {
           this.categories.push(res);
           this.category.name = "";
+          new swal({
+            position: "top-end",
+            icon: "success",
+            title: "Created successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         })
         .catch((error) => {
           this.Error = error.response.data.message;
@@ -153,26 +153,34 @@ export default {
         .then((res) => {
           this.getCategories();
           this.category = {};
+          new swal({
+            position: "top-end",
+            icon: "success",
+            title: "Updated successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         })
         .catch((error) => {
           this.Error = error.response.data.message;
         });
     },
     async destroy(category) {
-      new swal({
-        position: "top-end",
-        icon: "success",
-        title: "Deleted successfully",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      await this.$axios
-        .delete(`http://127.0.0.1:8000/api/category/${category.id}`)
-        .then(() => {
-          this.categories = this.categories.filter((item) => {
-            return item.id !== category.id;
+      if (confirm("Are you sure you want to delete?"))
+        await this.$axios
+          .delete(`http://127.0.0.1:8000/api/category/${category.id}`)
+          .then(() => {
+            this.categories = this.categories.filter((item) => {
+              return item.id !== category.id;
+            });
+            new swal({
+              position: "top-end",
+              icon: "success",
+              title: "Deleted successfully",
+              showConfirmButton: false,
+              timer: 1500,
+            });
           });
-        });
     },
   },
   async fetch() {

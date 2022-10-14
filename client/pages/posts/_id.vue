@@ -48,7 +48,7 @@ export default {
     return {
       posts: {},
       categories: [],
-      commentData: {
+      comment: {
         //user_id: {{ $auth.user.name }}
         //post_id: this.$route.params.id,
         body: "",
@@ -63,11 +63,11 @@ export default {
   methods: {
     async saveComment() {
       await this.$axios
-        .$post("http://127.0.0.1:8000/api/comment", this.commentData)
+        .$post("http://127.0.0.1:8000/api/comment", this.comment)
         .then((res) => {
           //this.comments.push(res);
           console.log(res.data);
-          this.commentData.body = "";
+          this.comment.body = "";
         });
     },
     async getPost() {
