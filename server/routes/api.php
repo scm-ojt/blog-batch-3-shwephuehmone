@@ -23,14 +23,20 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 //Route::get('/user', [AuthController::class, 'isAdmin'])->middleware('auth:sanctum');
 
+// Route::middleware(['auth:sanctum'])->group(function () {
+
 Route::resource("category", CategoryController::class);
-//Route::resource("post", PostController::class)->middleware('auth:sanctum');
+
+//Route::resource("post", PostController::class);
 Route::get('post', [PostController::class, 'index']);
 Route::post('post', [PostController::class, 'store']);
 Route::get('post/{id}', [PostController::class, 'show']);
 Route::post('post/{id}', [PostController::class, 'update']);
 Route::delete('post/{id}', [PostController::class, 'destroy']);
-//Route::get('/post/search/{keyword}', [PostController::class, 'searchPost']);
-Route::get('comment', [CommentController::class, 'index']);
+
+/* Route::get('comment', [CommentController::class, 'index']); */
 Route::post('comment', [CommentController::class, 'store']);
+Route::get('comment/{id}', [CommentController::class, 'index']);
 Route::delete('comment/{id}', [CommentController::class, 'destroy']);
+
+// });

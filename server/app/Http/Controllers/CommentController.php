@@ -16,9 +16,12 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($id)
     {
-        $comments = Comment::all();
+        $comments = Comment::where('post_id', $id)
+                            ->with('user')
+                            ->orderBy('id', 'DESC')
+                            ->get();
         return response()->json($comments);
     }
     
@@ -54,13 +57,13 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $comments= Comment::create([
-            'user_id'=>$request->user_id,
+            'user_id'=>Auth::user()->id,
             'post_id'=>$request->post_id,
             'body'=> $request->body
         ]);
         return response([
             "results" => "1",
-            "message" =>"Created successfully",
+            "message" =>"Comment is Created successfully",
             "data" => $comments
         ]);
     }
@@ -71,9 +74,9 @@ class CommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Comment $comment)
     {
-        $comment = Comment::find($id);
+        //$comment = Comment::find($id);
         $comment->delete();
         return response()->json(['message' => 'Comment has been deleted successfully'], 200);
     }

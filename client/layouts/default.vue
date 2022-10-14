@@ -11,6 +11,11 @@ import Navbar from "~/components/NavBar";
 export default {
   components: {
     Navbar,
+    watch: {
+      $route() {
+        location.reload();
+      },
+    },
   },
 };
 </script>

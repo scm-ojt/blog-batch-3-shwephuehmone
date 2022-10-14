@@ -18,7 +18,7 @@ class PostController extends Controller
     public function index(Request $request)
     {
         if ($request->search) {
-            return Post::where('name', 'like', '%' . $request->search . '%')
+            return Post::where('title', 'like', '%' . $request->search . '%')
             ->orderBy('id', 'DESC')->get();
         } else {
             return Post::orderBy('id', 'DESC')->get();

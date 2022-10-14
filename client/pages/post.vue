@@ -93,6 +93,7 @@ export default {
         id: null,
         //user_id: null,
         image: "",
+        comment: "",
         title: "",
       },
       posts: {},
@@ -103,14 +104,6 @@ export default {
     search() {
       this.getAllPosts();
     },
-    // async getPost() {
-    //   await this.$axios
-    //     .$get("http://127.0.0.1:8000/api/post/?search=" + this.keyword)
-    //     .then((res) => {
-    //       this.post = res;
-    //       console.log(this.post);
-    //     });
-    // },
     async getAllPosts() {
       await this.$axios
         .$get("http://127.0.0.1:8000/api/post?search=" + this.keyword)
@@ -122,7 +115,7 @@ export default {
         });
     },
     async destroy(post) {
-      if (confirm("Are you sure you want to delete?"))
+      if (confirm("Are you sure you want to delete this post?"))
         await this.$axios.delete(`http://127.0.0.1:8000/api/post/${post.id}`).then(() => {
           this.posts = this.posts.filter((item) => {
             return item.id !== post.id;
