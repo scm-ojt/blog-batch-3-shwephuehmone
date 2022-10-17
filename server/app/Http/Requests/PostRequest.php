@@ -25,7 +25,7 @@ class PostRequest extends FormRequest
     {
         return [
             'image'=> 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'title' => 'required|max50:',
+            'title' => 'required|max:50',
             'body' => 'required|max:225',
         ];
     }
@@ -38,8 +38,8 @@ class PostRequest extends FormRequest
     {
         return [
             'image.required' => 'Image is required',
-            'title.max' => 'Your text must not be more than 50 characters.',
             'title.required' => 'Post Title is required',
+            'title.max' => 'Your text must not be more than 50 characters.',
             'body.required' => 'Post body is required',
             'post.max' => 'Your text must not be more than 225 characters.',
         ];

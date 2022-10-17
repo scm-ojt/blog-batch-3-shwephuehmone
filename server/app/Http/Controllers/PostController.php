@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -19,7 +20,8 @@ class PostController extends Controller
     {
         if ($request->search) {
             return Post::where('title', 'like', '%' . $request->search . '%')
-            ->orderBy('id', 'DESC')->get();
+            ->orderBy('id', 'DESC')
+            ->get();
         } else {
             return Post::orderBy('id', 'DESC')->get();
         }
@@ -44,10 +46,12 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
+        info($request->category);
         $imageName = time() . '.' . $request->image->extension();
         $request->image->storeAs('public/images', $imageName);
         $posts= Post::create([
-            //'user_id'=> 1,
+            // 'user_id'=> Auth::user()->id,
+            'user_id'=> 3,
             //'category_id'=>$request->category_id,
             'image'=>$imageName,
             'title'=> $request->title,

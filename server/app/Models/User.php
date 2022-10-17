@@ -43,6 +43,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
     
+    /**
+    * The comment that belong to the users.
+    */
     public function comment()
     {
         return $this->belongsTo(Comment::class);
