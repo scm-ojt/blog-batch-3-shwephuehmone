@@ -35,7 +35,7 @@
                 <label> Name:</label>
                 <input v-model="category.name" type="text" class="form-control" />
               </div>
-              <div class="text-danger mb-3" v-if="Error">*{{ Error }}</div>
+              <div class="text-danger mb-3" v-if="Error">{{ Error }}</div>
               <button type="submit" class="btn btn-primary">
                 Save
                 <font-awesome-icon :icon="['fas', 'floppy-disk']" />
@@ -129,7 +129,7 @@ export default {
       await this.$axios
         .$post("http://127.0.0.1:8000/api/category", { name: this.category.name })
         .then((res) => {
-          this.categories.push(res);
+          this.categories.push(res.data);
           this.category.name = "";
           new swal({
             position: "top-end",

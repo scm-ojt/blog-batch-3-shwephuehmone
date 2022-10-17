@@ -2,7 +2,7 @@
   <div class="container my-5">
     <div class="row">
       <div class="col-2 offset-4 mb-3">
-        <b-button variant="primary" href="./posts/createpost">
+        <b-button variant="primary" href="./posts/create">
           Add
           <font-awesome-icon :icon="['fas', 'square-plus']" />
         </b-button>
@@ -136,7 +136,8 @@ export default {
 
 <style>
 .img {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
+  width: auto;
 }
 </style>

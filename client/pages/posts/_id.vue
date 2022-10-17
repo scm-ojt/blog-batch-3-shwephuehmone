@@ -29,13 +29,13 @@
           <b-card-body class="text-secondary">
             {{ comment.body }}
             <b-button variant="outline-danger btn-sm" @click="removeComment(comment.id)">
-              Delete <font-awesome-icon :icon="['fas', 'trash']" />
+              <font-awesome-icon :icon="['fas', 'trash']" />
             </b-button>
           </b-card-body>
         </div>
         <b-container class="mt-5">
           <b-button variant="outline-info" href="../post">
-            <font-awesome-icon :icon="['fas', 'arrow-left']" /> Back
+            <font-awesome-icon :icon="['fas', 'arrow-left']" />
           </b-button>
         </b-container>
       </b-card>

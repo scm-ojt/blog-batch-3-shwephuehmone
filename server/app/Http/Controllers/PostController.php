@@ -18,23 +18,11 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
+        $query = Post::with('user')->with('categories');
         if ($request->search) {
-            return Post::where('title', 'like', '%' . $request->search . '%')
-            ->orderBy('id', 'DESC')
-            ->get();
-        } else {
-            return Post::orderBy('id', 'DESC')->get();
+            $query->where('title', 'like', '%' . $request->search . '%');
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $posts = Post::all();
+        $posts = $query->orderBy('id', 'DESC')->get();
         return response()->json($posts);
     }
 
@@ -46,18 +34,20 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-        info($request->category);
         $imageName = time() . '.' . $request->image->extension();
         $request->image->storeAs('public/images', $imageName);
         $posts= Post::create([
-            // 'user_id'=> Auth::user()->id,
-            'user_id'=> 3,
-            //'category_id'=>$request->category_id,
-            'image'=>$imageName,
+            'user_id' => $request->user_id,
+            'image'=> $imageName,
             'title'=> $request->title,
             'body'=> $request->body,
         ]);
-        return response()->json($posts);
+        $posts->categories()->sync($request->categories);
+        return response([
+            'result' => 1,
+            'message' => 'Created successfully',
+            'data' => $posts
+        ]);
     }
 
     /**
@@ -69,20 +59,7 @@ class PostController extends Controller
     public function show($id)
     {
         $posts = Post::findorfail($id);
-        return response()->json(
-            $posts
-        );
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return response()->json($posts);
     }
 
     /**
@@ -95,10 +72,10 @@ class PostController extends Controller
     public function update(PostRequest $request, $id)
     {
         $posts = Post::find($id);
-        //$posts->category_id = $request->category_id;
-        //$posts->image = $request->image;
+        $posts->image = $request->image;
         $posts->title = $request->title;
         $posts->body = $request->body;
+        $posts->categories()->sync($request->categories);
         $posts->save();
         return response([
             'posts'=>$posts,
@@ -118,22 +95,4 @@ class PostController extends Controller
         $post->delete();
         return response()->json(['message' => 'Post has been deleted successfully'], 200);
     }
-
-    // /**
-    //  * Search the specified resource from storage.
-    //  *
-    //  * @param  $param
-    //  * @return Object
-    //  */
-    // public function searchPost($param)
-    // {
-    //     $categories = Category::all();
-    //     $search_data = "%" . $param . "%";
-    //     $posts = Post::where('title', 'like', $search_data)
-    //         ->orWhere('body', 'like', $search_data)
-    //         ->orWhereHas('category', function ($category) use ($search_data) {
-    //             $category->where('name', 'like', $search_data);
-    //         })->get();
-    //     return $posts;
-    // }
 }
