@@ -45,6 +45,7 @@
           <div class="footer"></div>
         </div>
       </div>
+      <!-- <p v-if="rows == 0" class="text-danger text-center">No category here!</p> -->
       <div class="col-8">
         <b-table
           id="my-table"

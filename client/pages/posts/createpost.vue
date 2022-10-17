@@ -7,7 +7,7 @@
           <div class="form-floating">
             <label for="floatingSelect">Select Category:</label>
             <select
-              name="category_id"
+              name="category[]"
               multiple
               class="form-select"
               aria-label="Default select example"
@@ -23,17 +23,17 @@
           </div>
           Image:
           <b-form-file v-model="post.image" class="mt-3" plain></b-form-file>
-          <div class="text-danger mb-3" v-if="Error">*{{ Error.image }}</div>
+          <div class="text-danger mb-3" v-if="Error">*{{ Error.image[0] }}</div>
           <div class="form-group mt-3">
             <label> Title:</label>
             <input v-model="post.title" type="text" class="form-control" />
           </div>
-          <div class="text-danger mb-3" v-if="Error">*{{ Error.title }}</div>
+          <div class="text-danger mb-3" v-if="Error">*{{ Error.title[0] }}</div>
           <div class="form-group">
             <label> Body:</label>
             <input v-model="post.body" type="text" class="form-control" />
           </div>
-          <div class="text-danger mb-3" v-if="Error">*{{ Error.body }}</div>
+          <div class="text-danger mb-3" v-if="Error">*{{ Error.body[0] }}</div>
           <div class="text-danger mb-3"></div>
           <button type="submit" class="btn btn-primary">
             Save
@@ -56,7 +56,7 @@ export default {
     return {
       post: {
         id: "",
-        //user_id: 1,
+        category: null,
         image: null,
         title: "",
         body: "",
@@ -82,6 +82,7 @@ export default {
     },
     async store() {
       const formData = new FormData();
+      formData.append("category", this.category);
       formData.append("image", this.post.image);
       formData.append("title", this.post.title);
       formData.append("body", this.post.body);

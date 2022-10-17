@@ -27,10 +27,12 @@
             <label> Title:</label>
             <input v-model="post.title" type="text" class="form-control" />
           </div>
+          <div class="text-danger mb-3" v-if="Error">*{{ Error.title }}</div>
           <div class="form-group">
             <label> Body:</label>
             <input v-model="post.body" type="text" class="form-control" />
           </div>
+          <div class="text-danger mb-3" v-if="Error">*{{ Error.body }}</div>
           <div class="text-danger mb-3"></div>
           <button type="submit" class="btn btn-primary">
             Save
@@ -49,6 +51,7 @@ export default {
   },
   data() {
     return {
+      Error: "",
       post: {},
       categories: [],
     };

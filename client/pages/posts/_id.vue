@@ -21,13 +21,17 @@
           <b-button type="submit" variant="outline-success" @click="saveComment()">
             Post <font-awesome-icon :icon="['fas', 'arrow-up']" />
           </b-button>
-          <b-button variant="outline-danger" @click="removeComment(commentData.id)">
-            Delete <font-awesome-icon :icon="['fas', 'trash']" />
-          </b-button>
         </div>
         <div class="mt-3">Comments of posts:</div>
         <div v-for="comment in comments" :key="comment.id">
-          <b-card-body class="text-secondary"> {{ comment.body }} </b-card-body>
+          <p class="text-black">Written by: {{ comment.user.name }}</p>
+          <p class="text-black">Created at: {{ comment.created_at }}</p>
+          <b-card-body class="text-secondary">
+            {{ comment.body }}
+            <b-button variant="outline-danger btn-sm" @click="removeComment(comment.id)">
+              Delete <font-awesome-icon :icon="['fas', 'trash']" />
+            </b-button>
+          </b-card-body>
         </div>
         <b-container class="mt-5">
           <b-button variant="outline-info" href="../post">
@@ -39,7 +43,7 @@
   </div>
 </template>
 <script>
-//import axios from "axios";
+import swal from "sweetalert2";
 export default {
   head: {
     title: "Post Details",
@@ -51,8 +55,6 @@ export default {
       },
       categories: [],
       commentData: {
-        user_name: "",
-        //post_id: this.$route.params.id,
         body: "",
       },
       comments: [],
@@ -97,6 +99,13 @@ export default {
           .then((res) => {
             this.comments = this.comments.filter((item) => {
               return item.id !== id;
+            });
+            new swal({
+              position: "top-end",
+              icon: "success",
+              title: "Deleted successfully",
+              showConfirmButton: false,
+              timer: 1500,
             });
           });
     },
