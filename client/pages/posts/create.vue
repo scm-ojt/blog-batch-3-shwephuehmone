@@ -23,7 +23,7 @@
           </div>
           Image:
           <b-form-file v-model="post.image" class="mt-3" plain></b-form-file>
-          <div class="text-danger mb-3" v-if="Error">*{{ Error.image[0] }}</div>
+          <div class="text-danger mb-3" v-if="Error">*{{ Error[0] }}</div>
           <div class="form-group mt-3">
             <label> Title:</label>
             <input v-model="post.title" type="text" class="form-control" />
