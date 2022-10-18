@@ -6,24 +6,17 @@
         <form method="POST" @submit.prevent="store()">
           <div class="form-floating">
             <label for="floatingSelect">Select Category:</label>
-            <select
-              name="category[]"
-              multiple
-              class="form-select"
-              aria-label="Default select example"
-            >
-              <option
-                v-for="category in categories"
-                :key="category.id"
-                :value="category.id"
-              >
+            <select v-model="post.category" name="category[]" multiple class="form-select" aria-label="Default select example">
+              <option v-for="category in categories" :key="category.id" :value="category.id">
                 {{ category.name }}
               </option>
             </select>
           </div>
+          <img id="frame" alt="post image" width="100px" height="100px"/>
           Image:
-          <b-form-file v-model="post.image" class="mt-3" plain></b-form-file>
-          <div class="text-danger mb-3" v-if="Error">*{{ Error[0] }}</div>
+          <b-form-file v-model="post.image" @change="preview" enctype="multipart/form-data" class="mt-3" plain>
+          </b-form-file>
+          <div class="text-danger mb-3" v-if="Error">*{{ Error.image[0] }}</div>
           <div class="form-group mt-3">
             <label> Title:</label>
             <input v-model="post.title" type="text" class="form-control" />
@@ -40,7 +33,8 @@
             <font-awesome-icon :icon="['fas', 'floppy-disk']" />
           </button>
           <b-button variant="danger" href="../post">
-            Cancel <font-awesome-icon :icon="['fas', 'xmark']" />
+            Cancel
+            <font-awesome-icon :icon="['fas', 'xmark']" />
           </b-button>
         </form>
       </div>
@@ -80,9 +74,14 @@ export default {
           console.error(err);
         });
     },
+    preview(event) {
+      let frame = document.getElementById("frame");
+      frame.setAttribute("src", URL.createObjectURL(event.target.files[0]));
+    },
     async store() {
       const formData = new FormData();
-      formData.append("category", this.category);
+      formData.append("user_id",this.$auth.user.id);
+      formData.append("categories", this.post.category);
       formData.append("image", this.post.image);
       formData.append("title", this.post.title);
       formData.append("body", this.post.body);
@@ -102,4 +101,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+
+</style>
