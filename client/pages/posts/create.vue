@@ -12,7 +12,7 @@
               </option>
             </select>
           </div>
-          <img id="frame" alt="post image" width="100px" height="100px"/>
+          <img id="frame" alt="post image" width="100px" height="100px"/><br>
           Image:
           <b-form-file v-model="post.image" @change="preview" enctype="multipart/form-data" class="mt-3" plain>
           </b-form-file>
@@ -50,7 +50,7 @@ export default {
     return {
       post: {
         id: "",
-        category: null,
+        category: [],
         image: null,
         title: "",
         body: "",

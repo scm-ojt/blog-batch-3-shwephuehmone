@@ -6,23 +6,15 @@
         <form method="POST" @submit.prevent="editPost()">
           <div class="form-floating">
             <label for="floatingSelect">Select Category:</label>
-            <select
-              name="category_id"
-              multiple
-              class="form-select"
-              aria-label="Default select example"
-            >
-              <option
-                v-for="category in categories"
-                :key="category.id"
-                :value="category.id"
-              >
+            <select v-model="post.categories" name="categories[]" multiple class="form-select" aria-label="Default select example">
+              <option v-for="category in categories" :key="category.id" :value="category.id">
                 {{ category.name }}
               </option>
             </select>
           </div>
+          <img :src="`http://localhost:8000/storage/images/${post.image}`" id="frame" alt="post image" width="100px" height="100px"/><br>
           Image:
-          <b-form-file v-model="post.image" class="mt-3" plain></b-form-file>
+          <b-form-file v-model="image"  class="mt-3" enctype="multipart/form-data" plain></b-form-file>
           <div class="form-group mt-3">
             <label> Title:</label>
             <input v-model="post.title" type="text" class="form-control" />
@@ -52,7 +44,14 @@ export default {
   data() {
     return {
       Error: "",
-      post: {},
+      post: {
+        id: "",
+        categories: [],
+        image: null,
+        title: "",
+        body: "",
+      },
+      image: null,
       categories: [],
     };
   },
@@ -75,25 +74,28 @@ export default {
       await this.$axios
         .$get("http://127.0.0.1:8000/api/post/" + this.$route.params.id)
         .then((res) => {
-          this.post = res;
-          console.log(this.post);
+          this.post = res.posts;
+          this.post.categories=res.categories;
+          console.log(res);
         });
     },
     editPost(id) {
+      const formData = new FormData();
+      formData.append("user_id",this.$auth.user.id);
+      formData.append("categories", this.post.categories);
+      formData.append("image", this.image);
+      formData.append("title", this.post.title);
+      formData.append("body", this.post.body);
       this.$axios
-        .$post(`http://127.0.0.1:8000/api/post/${this.post.id}`, {
-          image: this.post.image,
-          title: this.post.title,
-          body: this.post.body,
-        })
-        .then((res) => {
-          this.$router
-            .push({
-              path: "/post",
-            })
-            .catch((error) => {
-              this.Error = error.response.data.errors;
-            });
+        .post(`http://127.0.0.1:8000/api/post/${this.post.id}`, formData)
+        .then((response) => {
+          this.post = "";
+          this.$router.push({
+            path: "/post",
+          })
+            // .catch((error) => {
+            //   this.Error = error.response.data.errors;
+            // });
         });
     },
   },

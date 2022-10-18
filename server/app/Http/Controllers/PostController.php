@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\CategoryPost;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
@@ -59,7 +60,11 @@ class PostController extends Controller
     public function show($id)
     {
         $posts = Post::findorfail($id);
-        return response()->json($posts);
+        $categories=CategoryPost::where('post_id', $id)->pluck('category_id');
+        return response()->json([
+            'posts'=>$posts,
+            'categories'=>$categories
+        ]);
     }
 
     /**
@@ -72,7 +77,18 @@ class PostController extends Controller
     public function update(PostRequest $request, $id)
     {
         $posts = Post::find($id);
-        $posts->image = $request->image;
+        if (isset($_FILES['file'])) {
+            $file = $request->file('file');
+            $image = $file->getClientOriginalName();
+            $file->move('public/images', $image);
+            if (file_exists(public_path($image =  $file->getClientOriginalName()))) {
+                unlink(public_path($image));
+            };
+            //Update Image
+            $posts->file = $image;
+        }
+        $posts->user_id = $request->user_id;
+        //$posts->image = $request->image;
         $posts->title = $request->title;
         $posts->body = $request->body;
         $posts->categories()->sync($request->categories);
