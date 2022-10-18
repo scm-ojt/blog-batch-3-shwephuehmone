@@ -127,7 +127,7 @@ export default {
     async create() {
       this.isEditMode = false;
       await this.$axios
-        .$post("http://127.0.0.1:8000/api/category", { name: this.category.name })
+        .$post("http://127.0.0.1:8000/api/category", this.category)
         .then((res) => {
           this.categories.push(res.data);
           this.category.name = "";
@@ -150,7 +150,7 @@ export default {
       this.Error = "";
 
       this.$axios
-        .$put(`categories/${this.category.id}`, { name: this.category.name })
+        .$put(`categories/${this.category.id}`, { name: this.category.name, id: this })
         .then((res) => {
           this.getCategories();
           this.category = {};

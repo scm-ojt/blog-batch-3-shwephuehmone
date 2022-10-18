@@ -6,7 +6,7 @@
         <form method="POST" @submit.prevent="store()">
           <div class="form-floating">
             <label for="floatingSelect">Select Category:</label>
-            <select v-model="post.category" name="category[]" multiple class="form-select" aria-label="Default select example">
+            <select v-model="post.category" name="category[]" multiple class="form-select">
               <option v-for="category in categories" :key="category.id" :value="category.id">
                 {{ category.name }}
               </option>

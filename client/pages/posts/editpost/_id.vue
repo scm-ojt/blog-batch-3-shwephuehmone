@@ -6,7 +6,7 @@
         <form method="POST" @submit.prevent="editPost()">
           <div class="form-floating">
             <label for="floatingSelect">Select Category:</label>
-            <select v-model="post.categories" name="categories[]" multiple class="form-select" aria-label="Default select example">
+            <select v-model="post.categories" name="categories[]" multiple class="form-select">
               <option v-for="category in categories" :key="category.id" :value="category.id">
                 {{ category.name }}
               </option>
@@ -14,7 +14,7 @@
           </div>
           <img :src="`http://localhost:8000/storage/images/${post.image}`" id="frame" alt="post image" width="100px" height="100px"/><br>
           Image:
-          <b-form-file v-model="image"  class="mt-3" enctype="multipart/form-data" plain></b-form-file>
+          <b-form-file v-model="image"  @change="imageChange" class="mt-3" enctype="multipart/form-data" plain></b-form-file>
           <div class="form-group mt-3">
             <label> Title:</label>
             <input v-model="post.title" type="text" class="form-control" />
@@ -60,6 +60,10 @@ export default {
     this.getPost();
   },
   methods: {
+    imageChange(event){
+      let frame = document.getElementById("frame");
+      frame.setAttribute("src", URL.createObjectURL(event.target.files[0]));
+    },
     async getCategories() {
       await this.$axios
         .$get("http://127.0.0.1:8000/api/category")

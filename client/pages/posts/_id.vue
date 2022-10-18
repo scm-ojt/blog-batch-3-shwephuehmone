@@ -24,7 +24,7 @@
         </div>
         <div class="mt-3">Comments of posts:</div>
         <div v-for="comment in comments" :key="comment.id">
-          <p class="text-black">Written by: {{ comment.user.name }}</p>
+          <p class="text-black">Written by: {{ $auth.user.id }}</p>
           <p class="text-black">Created at: {{ comment.created_at }}</p>
           <b-card-body class="text-secondary">
             {{ comment.body }}
