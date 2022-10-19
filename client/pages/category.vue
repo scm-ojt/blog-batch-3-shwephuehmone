@@ -6,7 +6,7 @@
           <b>Import Excel File:</b>
           <div>
             <input type="file" class="fileSelect mb-3" name="file" />
-            <button type="submit" class="btn btn-success mb-3" @click="importExcel()">Upload
+            <button type="submit" class="btn btn-success mb-3" @click="importExcel()">Import
               <font-awesome-icon :icon="['fas', 'file-import']" />
             </button>
           </div>
@@ -52,7 +52,6 @@
           <div class="footer"></div>
         </div>
       </div>
-      <!-- <p v-if="rows == 0" class="text-danger text-center">No records here!</p> -->
       <div class="col-8">
         <b-table id="my-table" small :fields="fields" :items="categories" :per-page="perPage"
           :current-page="currentPage">
@@ -78,8 +77,18 @@
 </template>
 
 <script>
-import swal from "sweetalert2";
-
+import Swal from "sweetalert2";
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-right',
+  iconColor: '#a5dc86',
+  customClass: {
+    popup: 'colored-toast',
+  },
+  showConfirmButton: false,
+  timer: 1500,
+  timerProgressBar: true
+})
 export default {
   head: {
     title: "Category",
@@ -129,7 +138,7 @@ export default {
         .then((res) => {
           this.categories.push(res.data);
           this.category.name = "";
-          new swal({
+          new Swal({
             position: "top-end",
             icon: "success",
             title: "Created successfully",

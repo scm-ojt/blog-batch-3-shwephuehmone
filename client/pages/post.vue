@@ -1,21 +1,28 @@
 <template>
   <div class="container my-5">
+    <form id="catForm">
+          <b>Import Excel File:</b>
+          <div>
+            <input type="file" class="fileSelect mb-3" name="file" />
+            <button type="submit" class="btn btn-success mb-3" @click="importExcel()">Import
+              <font-awesome-icon :icon="['fas', 'file-import']" />
+            </button>
+          </div>
+    </form>
     <div class="row">
+      <button type="submit" class="btn btn-success mb-3" @click="exportExcel()">Download
+        <font-awesome-icon :icon="['fas', 'download']" />
+      </button>
       <div class="col-2 offset-4 mb-3">
         <b-button variant="primary" href="./posts/create">
           Add
           <font-awesome-icon :icon="['fas', 'square-plus']" />
         </b-button>
       </div>
-      <div class="col-6">
+      <div class="col-4">
         <form @submit.prevent="search()">
           <div class="input-group justify-content-end">
-            <input
-              type="text"
-              placeholder="search"
-              class="form-control"
-              v-model="keyword"
-            />
+            <input type="text" placeholder="search" class="form-control" v-model="keyword" />
             <div class="input-group-append">
               <button type="submit" class="btn btn-primary">Search</button>
             </div>
@@ -23,25 +30,13 @@
         </form>
       </div>
       <div class="col-8">
-        <b-table
-          id="my-table"
-          small
-          :fields="fields"
-          :items="posts"
-          :per-page="perPage"
-          :current-page="currentPage"
-        >
+        <b-table id="my-table" small :fields="fields" :items="posts" :per-page="perPage" :current-page="currentPage">
           <template #cell(image)="data">
-            <img
-              class="img"
-              :src="`http://localhost:8000/storage/images/${data.item.image}`"
-            />
+            <img class="img" :src="`http://localhost:8000/storage/images/${data.item.image}`" />
           </template>
           <template #cell(actions)="data">
             <button class="btn btn-success btn-sm">
-              <nuxt-link :to="`/posts/editpost/${data.item.id}`" class="text-white"
-                >Edit</nuxt-link
-              >
+              <nuxt-link :to="`/posts/editpost/${data.item.id}`" class="text-white">Edit</nuxt-link>
               <font-awesome-icon :icon="['fas', 'pen-to-square']" />
             </button>
             <button class="btn btn-danger btn-sm" @click="destroy(data.item)">
@@ -49,20 +44,13 @@
               <font-awesome-icon :icon="['fas', 'trash']" />
             </button>
             <button class="btn btn-info">
-              <nuxt-link :to="`./posts/${data.item.id}`" class="text-white"
-                >Details</nuxt-link
-              >
+              <nuxt-link :to="`./posts/${data.item.id}`" class="text-white">Details</nuxt-link>
               <font-awesome-icon :icon="['fas', 'circle-info']" />
             </button>
           </template>
         </b-table>
         <div class="overflow-auto">
-          <b-pagination
-            v-model="currentPage"
-            :total-rows="rows"
-            :per-page="perPage"
-            aria-controls="my-table"
-          >
+          <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="my-table">
           </b-pagination>
           <p class="mt-3">Current Page: {{ currentPage }}</p>
         </div>
@@ -72,6 +60,18 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-right',
+  iconColor: '#a5dc86',
+  customClass: {
+    popup: 'colored-toast',
+  },
+  showConfirmButton: false,
+  timer: 1500,
+  timerProgressBar: true
+})
 export default {
   head: {
     title: "Post",
@@ -87,6 +87,8 @@ export default {
         { key: "image", label: "image" },
         "title",
         { key: "title", label: "title" },
+        "body",
+        { key: "body", label: "body" },
         "Actions",
       ],
       post: {
@@ -121,6 +123,37 @@ export default {
             return item.id !== post.id;
           });
         });
+    },
+    importExcel(){
+      var catForm = document.getElementById("catForm")
+      var data = new FormData(catForm)
+      this.$axios.$post("http://127.0.0.1:8000/api/post/import", data)
+        .then((res) => {
+          this.getCategories();
+        }).catch((error) => {
+          console.log(error);
+        });
+    },
+    exportExcel() {
+      this.$axios.$post("http://127.0.0.1:8000/api/post/export",
+      { keyword: this.keyword },
+      { responseType: "arraybuffer" })
+        .then(response => {
+          const url = window.URL.createObjectURL(new Blob([response]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "posts.xlsx");
+          document.body.appendChild(link);
+          link.click();
+          //console.log(response);
+        //   await Toast.fire({
+        //   icon: 'success',
+        //   title: 'Downloaded Successfully'
+        // })
+        })
+        // .catch((error) => {
+        //   console.log(error);
+        // });
     },
   },
   async fetch() {

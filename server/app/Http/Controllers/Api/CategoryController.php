@@ -72,6 +72,9 @@ class CategoryController extends Controller
             "message" =>"success",
             "data" => $category
         ]);
+        if ($category->isEmpty()) {
+            return response(['error' => 'Record not found'], 404);
+        }
     }
 
     /**

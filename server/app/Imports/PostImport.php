@@ -2,15 +2,13 @@
 
 namespace App\Imports;
 
-use App\Models\Category;
+use App\Models\Post;
 use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class CategoryImport implements ToModel, WithHeadingRow
+class PostImport implements ToModel, WithHeadingRow
 {
     use Importable;
-    
     /**
     * @param array $row
     *
@@ -18,8 +16,11 @@ class CategoryImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        return new Category([
-            'name'     => $row['name']
+        return new Post([
+            //'user_id' => $row['user_id'],
+            'image'     => $row['image'],
+            'title'     => $row['title'],
+            'body'     => $row['body']
         ]);
     }
 }

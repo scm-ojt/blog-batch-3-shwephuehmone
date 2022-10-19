@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Category;
+use App\Exports\PostExport;
+use App\Imports\PostImport;
 use App\Models\CategoryPost;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PostController extends Controller
 {
@@ -87,8 +90,7 @@ class PostController extends Controller
             //Update Image
             $posts->file = $image;
         }
-        $posts->user_id = $request->user_id;
-        //$posts->image = $request->image;
+        //$posts->user_id = $request->user_id;
         $posts->title = $request->title;
         $posts->body = $request->body;
         $posts->categories()->sync($request->categories);
@@ -110,5 +112,16 @@ class PostController extends Controller
         $post = Post::find($id);
         $post->delete();
         return response()->json(['message' => 'Post has been deleted successfully'], 200);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new PostExport($request->keyword), 'posts.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        Excel::import(new PostImport(), $request->file('file'));
+        return response(200);
     }
 }
