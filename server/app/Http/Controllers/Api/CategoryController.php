@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Exports\CategoryExport;
+use App\Imports\CategoryImport;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CategoryRequest;
 
 //use App\Http\Requests\CategoryRequest;
@@ -99,7 +102,21 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
         $category->delete();
-        return response()->json(["category"=>$category,
-        "message"=> 'Category has been deleted successfully'], 200);
+        return response()->json(
+            ["category"=>$category,
+            "message"=> 'Category has been deleted successfully'],
+            200
+        );
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new CategoryExport($request->keyword), 'categories.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        Excel::import(new CategoryImport(), $request->file('file'));
+        return response(200);
     }
 }
