@@ -129,7 +129,7 @@ export default {
       var data = new FormData(catForm)
       this.$axios.$post("http://127.0.0.1:8000/api/post/import", data)
         .then((res) => {
-          this.getCategories();
+          this.getAllPosts();
         }).catch((error) => {
           console.log(error);
         });
