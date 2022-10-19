@@ -1,23 +1,30 @@
 <template>
   <div class="container my-5">
     <div class="row">
-      <div class="col-2 offset-4">
+      <div class="col-4 offset-4">
+        <form id="catForm">
+          <b>Import Excel File:</b>
+          <div>
+            <input type="file" class="fileSelect mb-3" name="file" />
+            <button type="submit" class="btn btn-success mb-3" @click="importExcel()">Upload
+              <font-awesome-icon :icon="['fas', 'file-import']" />
+            </button>
+          </div>
+        </form>
+        <button class="btn btn-success mb-3" @click="exportExcel()">Download
+          <font-awesome-icon :icon="['fas', 'download']" />
+        </button>
         <button class="btn btn-primary mb-3" @click="create">
-          Create
+          Add
           <font-awesome-icon :icon="['fas', 'square-plus']" />
         </button>
       </div>
-      <div class="col-6">
+      <div class="col-3">
         <form @submit.prevent="search()">
           <div class="input-group">
-            <input
-              type="text"
-              placeholder="search"
-              class="form-control"
-              v-model="keyword"
-            />
+            <input type="text" placeholder="search" class="form-control" v-model="keyword" />
             <div class="input-group-append">
-              <button type="submit" class="btn btn-primary">Search</button>
+              <button type="submit" class="btn btn-primary mb-3 justify-content-end">Search</button>
             </div>
           </div>
         </form>
@@ -45,32 +52,23 @@
           <div class="footer"></div>
         </div>
       </div>
-      <!-- <p v-if="rows == 0" class="text-danger text-center">No category here!</p> -->
+      <!-- <p v-if="rows == 0" class="text-danger text-center">No records here!</p> -->
       <div class="col-8">
-        <b-table
-          id="my-table"
-          small
-          :fields="fields"
-          :items="categories"
-          :per-page="perPage"
-          :current-page="currentPage"
-        >
+        <b-table id="my-table" small :fields="fields" :items="categories" :per-page="perPage"
+          :current-page="currentPage">
           <template #cell(actions)="data">
             <button class="btn btn-success btn-sm" @click="edit(data.item)">
-              Edit <font-awesome-icon :icon="['fas', 'pen-to-square']" />
+              Edit
+              <font-awesome-icon :icon="['fas', 'pen-to-square']" />
             </button>
             <button class="btn btn-danger btn-sm" @click="destroy(data.item)">
-              Delete <font-awesome-icon :icon="['fas', 'trash']" />
+              Delete
+              <font-awesome-icon :icon="['fas', 'trash']" />
             </button>
           </template>
         </b-table>
         <div class="overflow-auto">
-          <b-pagination
-            v-model="currentPage"
-            :total-rows="rows"
-            :per-page="perPage"
-            aria-controls="my-table"
-          >
+          <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="my-table">
           </b-pagination>
           <p class="mt-3">Current Page: {{ currentPage }}</p>
         </div>
@@ -182,6 +180,30 @@ export default {
               timer: 1500,
             });
           });
+    },
+    exportExcel() {
+      this.$axios.$post("http://127.0.0.1:8000/api/category/export",
+        { keyword: this.keyword },
+        { responseType: "arraybuffer" })
+        .then(response => {
+          const url = window.URL.createObjectURL(new Blob([response]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "categories.xlsx");
+          document.body.appendChild(link);
+          link.click();
+          alert('File is downloading...');
+        });
+    },
+    importExcel() {
+      var catForm = document.getElementById("catForm")
+      var data = new FormData(catForm)
+      this.$axios.$post("http://127.0.0.1:8000/api/category/import", data)
+        .then((res) => {
+          this.getCategories();
+        }).catch((error) => {
+          console.log(error);
+        });
     },
   },
   async fetch() {
