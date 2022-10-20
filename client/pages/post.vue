@@ -1,6 +1,6 @@
 <template>
   <div class="container my-5">
-    <form id="catForm">
+    <form id="postForm">
           <b>Import Excel File:</b>
           <div>
             <input type="file" class="fileSelect mb-3" name="file" />
@@ -36,12 +36,14 @@
           </template>
           <template #cell(actions)="data">
             <button class="btn btn-success btn-sm">
-              <nuxt-link :to="`/posts/editpost/${data.item.id}`" class="text-white">Edit</nuxt-link>
-              <font-awesome-icon :icon="['fas', 'pen-to-square']" />
+              <nuxt-link :to="`/posts/editpost/${data.item.id}`" class="text-white">
+                <font-awesome-icon :icon="['fas', 'pen-to-square']" />
+                Edit
+                </nuxt-link>
             </button>
             <button class="btn btn-danger btn-sm" @click="destroy(data.item)">
-              Delete
               <font-awesome-icon :icon="['fas', 'trash']" />
+              Delete
             </button>
             <button class="btn btn-info">
               <nuxt-link :to="`./posts/${data.item.id}`" class="text-white">Details</nuxt-link>
@@ -118,19 +120,26 @@ export default {
     },
     async destroy(post) {
       if (confirm("Are you sure you want to delete this post?"))
-        await this.$axios.delete(`http://127.0.0.1:8000/api/post/${post.id}`).then(() => {
+        await this.$axios.delete(`http://127.0.0.1:8000/api/post/${post.id}`).then(async () => {
           this.posts = this.posts.filter((item) => {
             return item.id !== post.id;
           });
+          await Toast.fire({
+          icon: 'success',
+          title: 'Deleted Successfully'})
         });
     },
     importExcel(){
-      var catForm = document.getElementById("catForm")
-      var data = new FormData(catForm)
+      var postForm = document.getElementById("postForm")
+      var data = new FormData(postForm)
       this.$axios.$post("http://127.0.0.1:8000/api/post/import", data)
-        .then((res) => {
+        .then(async (res) => {
           this.getAllPosts();
-        }).catch((error) => {
+          await Toast.fire({
+          icon: 'success',
+          title: 'Downloaded Successfully'})
+        })
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -138,22 +147,21 @@ export default {
       this.$axios.$post("http://127.0.0.1:8000/api/post/export",
       { keyword: this.keyword },
       { responseType: "arraybuffer" })
-        .then(response => {
+        .then(async response => {
           const url = window.URL.createObjectURL(new Blob([response]));
           const link = document.createElement("a");
           link.href = url;
           link.setAttribute("download", "posts.xlsx");
           document.body.appendChild(link);
           link.click();
-          //console.log(response);
-        //   await Toast.fire({
-        //   icon: 'success',
-        //   title: 'Downloaded Successfully'
-        // })
+          await Toast.fire({
+          icon: 'success',
+          title: 'Downloaded Successfully'
         })
-        // .catch((error) => {
-        //   console.log(error);
-        // });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
   async fetch() {

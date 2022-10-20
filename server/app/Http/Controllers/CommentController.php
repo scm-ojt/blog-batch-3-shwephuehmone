@@ -58,7 +58,7 @@ class CommentController extends Controller
     {
         $comments= Comment::create([
             'user_id' => $request->user_id,
-            'post_id'=>36,
+            'post_id'=>4,
             'body'=> $request->body
         ]);
 

@@ -38,7 +38,7 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-        $imageName = time() . '.' . $request->image->extension();
+        $imageName = time().rand(1, 99).'.' . $request->image->extension();
         $request->image->storeAs('public/images', $imageName);
         $posts= Post::create([
             'user_id' => $request->user_id,
@@ -60,9 +60,8 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $posts)
     {
-        $posts = Post::findorfail($id);
         $categories=CategoryPost::where('post_id', $id)->pluck('category_id');
         return response()->json([
             'posts'=>$posts,
@@ -90,7 +89,7 @@ class PostController extends Controller
             //Update Image
             $posts->file = $image;
         }
-        //$posts->user_id = $request->user_id;
+        $posts->user_id = $request->user_id;
         $posts->title = $request->title;
         $posts->body = $request->body;
         $posts->categories()->sync($request->categories);
@@ -107,9 +106,8 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post)
     {
-        $post = Post::find($id);
         $post->delete();
         return response()->json(['message' => 'Post has been deleted successfully'], 200);
     }

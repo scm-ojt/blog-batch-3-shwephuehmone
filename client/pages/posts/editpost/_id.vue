@@ -97,9 +97,9 @@ export default {
           this.$router.push({
             path: "/post",
           })
-            // .catch((error) => {
-            //   this.Error = error.response.data.errors;
-            // });
+            .catch((error) => {
+              this.Error = error.response.data.errors;
+            });
         });
     },
   },

@@ -19,13 +19,14 @@
           >
           </textarea>
           <b-button type="submit" variant="outline-success" @click="saveComment()">
-            Post <font-awesome-icon :icon="['fas', 'arrow-up']" />
+           Save
+           <font-awesome-icon :icon="['fas', 'floppy-disk']" />
           </b-button>
         </div>
         <div class="mt-3">Comments of posts:</div>
         <div v-for="comment in comments" :key="comment.id">
-          <p class="text-black">Written by: {{ $auth.user.id }}</p>
-          <p class="text-black">Created at: {{ comment.created_at }}</p>
+          <p class="text-black">Written by: {{ $auth.user.name }}</p>
+          <p class="text-black">Created at: {{ new Date(comment.created_at).toDateString() }}</p>
           <b-card-body class="text-secondary">
             {{ comment.body }}
             <b-button variant="outline-danger btn-sm" @click="removeComment(comment.id)">
@@ -36,6 +37,7 @@
         <b-container class="mt-5">
           <b-button variant="outline-info" href="../post">
             <font-awesome-icon :icon="['fas', 'arrow-left']" />
+            Back
           </b-button>
         </b-container>
       </b-card>
@@ -44,6 +46,17 @@
 </template>
 <script>
 import swal from "sweetalert2";
+const Toast = swal.mixin({
+  toast: true,
+  position: 'top-right',
+  iconColor: '#a5dc86',
+  customClass: {
+    popup: 'colored-toast',
+  },
+  showConfirmButton: false,
+  timer: 1500,
+  timerProgressBar: true
+})
 export default {
   head: {
     title: "Post Details",
@@ -76,10 +89,10 @@ export default {
     },
     async getPost() {
       await this.$axios
-        .$get("http://127.0.0.1:8000/api/post/" + this.$route.params.id)
+        .$get(`http://127.0.0.1:8000/api/post/${this.$route.params.id}`)
         .then((res) => {
           this.posts = res;
-          console.log(this.post);
+          this.showComments();
         });
     },
     async showComments() {
@@ -87,26 +100,23 @@ export default {
         .$get(`http://127.0.0.1:8000/api/comment/${this.$route.params.id}`)
         .then((res) => {
           this.comments = res;
-        });
-      // .catch((err) => {
-      //   console.error(err);
-      // });
+        })
+      .catch((err) => {
+        console.error(err);
+      });
     },
     async removeComment(id) {
       if (confirm("Are you sure you want to delete this comment?"))
         await this.$axios
           .delete(`http://127.0.0.1:8000/api/comment/${id}`)
-          .then((res) => {
+          .then(async (res) => {
             this.comments = this.comments.filter((item) => {
               return item.id !== id;
             });
-            new swal({
-              position: "top-end",
-              icon: "success",
-              title: "Deleted successfully",
-              showConfirmButton: false,
-              timer: 1500,
-            });
+            await Toast.fire({
+            icon: 'warning',
+            title: 'Deleted Successfully'
+                          })
           });
     },
   },
@@ -116,6 +126,5 @@ export default {
 .img {
   width: 80px;
   height: 80px;
-  float: left;
 }
 </style>

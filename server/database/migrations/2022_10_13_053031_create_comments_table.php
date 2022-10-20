@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->foreign('post_id')->references('id')->on('posts');
             $table->string('body');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

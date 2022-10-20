@@ -64,9 +64,8 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Category $category)
     {
-        $category = Category::findorfail($id);
         return response([
             "results" => "1",
             "message" =>"success",
@@ -84,9 +83,8 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CategoryRequest $request, $id)
+    public function update(CategoryRequest $request, Category $category)
     {
-        $category = Category::find($id);
         $category->name = $request->name;
         $category->save();
         return response([
@@ -101,9 +99,8 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        $category = Category::find($id);
         $category->delete();
         return response()->json(
             ["category"=>$category,

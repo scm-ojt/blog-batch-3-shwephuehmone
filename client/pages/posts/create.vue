@@ -16,6 +16,14 @@
           Image:
           <b-form-file v-model="post.image" @change="preview" enctype="multipart/form-data" class="mt-3" plain>
           </b-form-file>
+          <!-- <div class="clone hide">
+            <div class="hdtuto control-group lst input-group" style="margin-top:10px">
+              <input type="file" name="imageName[]" class="myfrm form-control">
+              <div class="input-group-btn"> 
+                <button class="btn btn-danger" type="button"><i class="fldemo glyphicon glyphicon-remove"></i> Remove</button>
+              </div>
+            </div>
+          </div> -->
           <div class="text-danger mb-3" v-if="Error">*{{ Error.image[0] }}</div>
           <div class="form-group mt-3">
             <label> Title:</label>
@@ -24,7 +32,8 @@
           <div class="text-danger mb-3" v-if="Error">*{{ Error.title[0] }}</div>
           <div class="form-group">
             <label> Body:</label>
-            <input v-model="post.body" type="text" class="form-control" />
+            <textarea v-model="post.body" type="text" class="form-control">
+            </textarea>
           </div>
           <div class="text-danger mb-3" v-if="Error">*{{ Error.body[0] }}</div>
           <div class="text-danger mb-3"></div>

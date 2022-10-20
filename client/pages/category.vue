@@ -57,12 +57,14 @@
           :current-page="currentPage">
           <template #cell(actions)="data">
             <button class="btn btn-success btn-sm" @click="edit(data.item)">
-              Edit
+
               <font-awesome-icon :icon="['fas', 'pen-to-square']" />
+              Edit
             </button>
             <button class="btn btn-danger btn-sm" @click="destroy(data.item)">
-              Delete
+
               <font-awesome-icon :icon="['fas', 'trash']" />
+              Delete
             </button>
           </template>
         </b-table>
@@ -135,16 +137,12 @@ export default {
       this.isEditMode = false;
       await this.$axios
         .$post("http://127.0.0.1:8000/api/category", this.category)
-        .then((res) => {
-          this.categories.push(res.data);
+        .then(async (res) => {
+          this.categories.unshift(res.data);
           this.category.name = "";
-          new Swal({
-            position: "top-end",
-            icon: "success",
-            title: "Created successfully",
-            showConfirmButton: false,
-            timer: 1500,
-          });
+          await Toast.fire({
+          icon: 'success',
+          title: 'Created Successfully'})
         })
         .catch((error) => {
           this.Error = error.response.data.message;
@@ -158,16 +156,12 @@ export default {
 
       this.$axios
         .$put(`categories/${this.category.id}`, { name: this.category.name, id: this })
-        .then((res) => {
+        .then(async (res) => {
           this.getCategories();
           this.category = {};
-          new swal({
-            position: "top-end",
-            icon: "success",
-            title: "Updated successfully",
-            showConfirmButton: false,
-            timer: 1500,
-          });
+          await Toast.fire({
+          icon: 'info',
+          title: 'Updated Successfully'})
         })
         .catch((error) => {
           this.Error = error.response.data.message;
@@ -177,39 +171,40 @@ export default {
       if (confirm("Are you sure you want to delete?"))
         await this.$axios
           .delete(`http://127.0.0.1:8000/api/category/${category.id}`)
-          .then(() => {
+          .then(async () => {
             this.categories = this.categories.filter((item) => {
               return item.id !== category.id;
             });
-            new swal({
-              position: "top-end",
-              icon: "success",
-              title: "Deleted successfully",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-          });
+            await Toast.fire({
+          icon: 'warning',
+          title: 'Deleted Successfully'})
+        });
     },
     exportExcel() {
       this.$axios.$post("http://127.0.0.1:8000/api/category/export",
         { keyword: this.keyword },
         { responseType: "arraybuffer" })
-        .then(response => {
+        .then(async response => {
           const url = window.URL.createObjectURL(new Blob([response]));
           const link = document.createElement("a");
           link.href = url;
           link.setAttribute("download", "categories.xlsx");
           document.body.appendChild(link);
           link.click();
-          alert('File is downloading...');
+          await Toast.fire({
+          icon: 'success',
+          title: 'Downloaded Successfully'})
         });
     },
     importExcel() {
       var catForm = document.getElementById("catForm")
       var data = new FormData(catForm)
       this.$axios.$post("http://127.0.0.1:8000/api/category/import", data)
-        .then((res) => {
+        .then(async (res) => {
           this.getCategories();
+          await Toast.fire({
+          icon: 'success',
+          title: 'Imported Successfully'})
         }).catch((error) => {
           console.log(error);
         });
