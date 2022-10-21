@@ -4,13 +4,12 @@ namespace App\Imports;
 
 use App\Models\Category;
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToModel;
-use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
 
-class CategoryImport implements ToCollection, WithHeadingRow
+class CategoryImport implements ToCollection, WithHeadingRow, WithValidation
 {
     use Importable;
     
@@ -21,20 +20,27 @@ class CategoryImport implements ToCollection, WithHeadingRow
     */
     public function collection(Collection $rows)
     {
-        Validator::make($rows->toArray(), [
-            '*.name' => 'required',
-        ])->validate();
-        
         foreach ($rows as $row) {
-            if ('*action' == 'create') {
+            if ($row['action'] == 'create') {
                 Category::create([
                     'name' => $row['name'],
                 ]);
-            }else if('*action' == 'update'){
+            } elseif ($row['action'] == 'update') {
+                $category = Category::findorfail($row['id']);
                 $category-> name = $row['name'];
-            }else{
-                $category->delete();
+                $category->save();
+            } elseif ($row['action'] == 'delete') {
+                Category::where('id', $row['id'])->delete();
             }
         }
+    }
+    
+    public function rules(): array
+    {
+        return
+        [
+            '*.name' => 'required',
+            '*.action' => 'required'
+        ];
     }
 }

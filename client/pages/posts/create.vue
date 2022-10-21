@@ -12,18 +12,11 @@
               </option>
             </select>
           </div>
-          <img id="frame" alt="post image" width="100px" height="100px"/><br>
+          <img  id="frame" alt="post image" width="100px" height="100px"/><br>
           Image:
-          <b-form-file v-model="post.image" @change="preview" enctype="multipart/form-data" class="mt-3" plain>
+          <b-form-file v-model="post.image" id="img" name="images" @change="preview" enctype="multipart/form-data" class="mt-3"  multiple>
+          
           </b-form-file>
-          <!-- <div class="clone hide">
-            <div class="hdtuto control-group lst input-group" style="margin-top:10px">
-              <input type="file" name="imageName[]" class="myfrm form-control">
-              <div class="input-group-btn"> 
-                <button class="btn btn-danger" type="button"><i class="fldemo glyphicon glyphicon-remove"></i> Remove</button>
-              </div>
-            </div>
-          </div> -->
           <div class="text-danger mb-3" v-if="Error">*{{ Error.image[0] }}</div>
           <div class="form-group mt-3">
             <label> Title:</label>
@@ -65,6 +58,7 @@ export default {
         body: "",
       },
       posts: {},
+      url: "",
       Error: "",
       categories: [],
     };
@@ -109,7 +103,3 @@ export default {
   },
 };
 </script>
-
-<style>
-
-</style>

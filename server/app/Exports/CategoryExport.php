@@ -32,7 +32,7 @@ class CategoryExport implements FromCollection, WithHeadings, ShouldAutoSize
             'name',
             'created_at',
             'updated_at',
-            'actions'
+            'action'
         ];
     }
 }

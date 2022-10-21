@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Image;
 use App\Models\Category;
 use App\Exports\PostExport;
 use App\Imports\PostImport;
@@ -38,11 +39,17 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-        $imageName = time().rand(1, 99).'.' . $request->image->extension();
-        $request->image->storeAs('public/images', $imageName);
-        $posts= Post::create([
+        foreach ($request->file('images') as $imagefile) {
+            $image = new Image;
+            $image = time().'.'.$request->image->extension();
+            // $path  = $request->image->storeAs('public/images', $image);
+            $path  = $imagefile->storeAs('public/images', $image);
+            $image->url = $path;
+            $image->save();
+        }
+        $posts = Post::create([
             'user_id' => $request->user_id,
-            'image'=> $imageName,
+            'image'=> $image,
             'title'=> $request->title,
             'body'=> $request->body,
         ]);
@@ -60,8 +67,9 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $posts)
+    public function show($id)
     {
+        $posts = Post::find($id);
         $categories=CategoryPost::where('post_id', $id)->pluck('category_id');
         return response()->json([
             'posts'=>$posts,

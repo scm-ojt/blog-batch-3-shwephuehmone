@@ -34,7 +34,7 @@ class PostExport implements FromCollection, WithHeadings, ShouldAutoSize
             'body',
             'created_at',
             'updated_at',
-            'actions'
+            'action'
         ];
     }
 }

@@ -2,11 +2,12 @@
   <div class="container my-5">
     <div class="row">
       <div class="col-4 offset-4">
-        <form id="catForm">
+        <form id="catForm" @submit.prevent="importExcel()">
           <b>Import Excel File:</b>
           <div>
+            <span class="text-danger mb-3" v-for="(error,index) in errors" :key="index">*{{ error[0] }}<br></span>
             <input type="file" class="fileSelect mb-3" name="file" />
-            <button type="submit" class="btn btn-success mb-3" @click="importExcel()">Import
+            <button type="submit" class="btn btn-success mb-3">Import
               <font-awesome-icon :icon="['fas', 'file-import']" />
             </button>
           </div>
@@ -113,6 +114,7 @@ export default {
       },
       categories: [],
       Error: "",
+      errors: null,
       keyword: "",
     };
   },
@@ -206,7 +208,8 @@ export default {
           icon: 'success',
           title: 'Imported Successfully'})
         }).catch((error) => {
-          console.log(error);
+          this.errors = error.response.data.errors;
+          console.log();
         });
     },
   },

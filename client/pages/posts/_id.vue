@@ -23,7 +23,7 @@
            <font-awesome-icon :icon="['fas', 'floppy-disk']" />
           </b-button>
         </div>
-        <div class="mt-3">Comments of posts:</div>
+        <div class="mt-3"><h5>Comments of posts:</h5></div>
         <div v-for="comment in comments" :key="comment.id">
           <p class="text-black">Written by: {{ $auth.user.name }}</p>
           <p class="text-black">Created at: {{ new Date(comment.created_at).toDateString() }}</p>
