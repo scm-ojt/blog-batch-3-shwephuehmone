@@ -39,17 +39,11 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-        foreach ($request->file('images') as $imagefile) {
-            $image = new Image;
-            $image = time().'.'.$request->image->extension();
-            // $path  = $request->image->storeAs('public/images', $image);
-            $path  = $imagefile->storeAs('public/images', $image);
-            $image->url = $path;
-            $image->save();
-        }
-        $posts = Post::create([
+        $imageName = time().'.'. $request->image->extension();
+        $request->image->storeAs('public/images', $imageName);
+        $posts= Post::create([
             'user_id' => $request->user_id,
-            'image'=> $image,
+            'image'=> $imageName,
             'title'=> $request->title,
             'body'=> $request->body,
         ]);

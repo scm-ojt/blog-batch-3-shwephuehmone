@@ -6,7 +6,7 @@
         <img class="img" :src="`http://localhost:8000/storage/images/${posts.image}`" />
         <center>
           <b-card-title class="text-secondary">Title: {{ posts.title }} </b-card-title>
-          <b-card-content class="text-mute">Content: {{ posts.body }}</b-card-content>
+          <b-card-body class="text-mute">Content: {{ posts.body }}</b-card-body>
         </center>
         <div class="form-floating mt-5">
           <label for="floatingTextarea2">Comments:</label>
@@ -46,6 +46,7 @@
 </template>
 <script>
 import swal from "sweetalert2";
+
 const Toast = swal.mixin({
   toast: true,
   position: 'top-right',
@@ -68,6 +69,7 @@ export default {
       },
       categories: [],
       commentData: {
+        post_id: "",
         body: "",
       },
       comments: [],
@@ -84,14 +86,15 @@ export default {
         .then((res) => {
           console.log(res.data);
           this.commentData.body = "";
-          location.reload();
-        });
+        }).catch((err) => {
+        console.error(err);
+      });
     },
     async getPost() {
       await this.$axios
         .$get(`http://127.0.0.1:8000/api/post/${this.$route.params.id}`)
         .then((res) => {
-          this.posts = res;
+          this.posts = res.posts;
           this.showComments();
         });
     },

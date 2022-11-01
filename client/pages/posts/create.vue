@@ -14,8 +14,7 @@
           </div>
           <img  id="frame" alt="post image" width="100px" height="100px"/><br>
           Image:
-          <b-form-file v-model="post.image" id="img" name="images" @change="preview" enctype="multipart/form-data" class="mt-3"  multiple>
-          
+          <b-form-file v-model="post.image" id="img" name="images" @change="preview" enctype="multipart/form-data" class="mt-3" plain>
           </b-form-file>
           <div class="text-danger mb-3" v-if="Error">*{{ Error.image[0] }}</div>
           <div class="form-group mt-3">

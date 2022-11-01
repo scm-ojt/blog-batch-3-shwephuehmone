@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 //use App\Http\Requests\CommentRequest;
 
@@ -26,17 +26,6 @@ class CommentController extends Controller
     }
     
     /**
-     * Summary of createComment
-     * @param CommentRequest $request
-     * @return mixed
-     */
-    public function create(Request $request)
-    {
-        $comments = Comment::all();
-        return response()->json($comments);
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -44,7 +33,10 @@ class CommentController extends Controller
      */
     public function show($id)
     {
-        $comments = Comment::findorfail($id);
+        $comments = Comment::where('post_id', $id)
+        ->with('user')
+        ->orderBy('id', 'desc')
+        ->get();
         return response()->json($comments);
     }
 
@@ -56,13 +48,12 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
+        info($request->post_id);
         $comments= Comment::create([
-            'user_id' => $request->user_id,
-            'post_id'=>4,
+            'user_id' =>  $request->user_id,
+            'post_id' => $request->post_id,
             'body'=> $request->body
         ]);
-
-        
         return response([
             "results" => "1",
             "message" =>"Comment is Created successfully",
@@ -78,7 +69,6 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //$comment = Comment::find($id);
         $comment->delete();
         return response()->json(['message' => 'Comment has been deleted successfully'], 200);
     }
