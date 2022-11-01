@@ -14,7 +14,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::post('/category/export', [CategoryController::class,'export']);
 Route::post('/category/import', [CategoryController::class, 'import']);
 
-Route::resource("category", CategoryController::class);
+Route::resource('category', CategoryController::class);
 
 Route::post('/post/export', [PostController::class,'export']);
 Route::post('/post/import', [PostController::class, 'import']);
